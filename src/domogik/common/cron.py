@@ -39,7 +39,7 @@ import calendar
 __all__ = ["CronExpression", "DEFAULT_EPOCH", "SUBSTITUTIONS"]
 __license__ = "Public Domain"
 
-DAY_NAMES = zip(('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'), xrange(7))
+DAY_NAMES = list(zip(('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'), list(range(7))))
 MINUTES = (0, 59)
 HOURS = (0, 23)
 DAYS_OF_MONTH = (1, 31)
@@ -47,8 +47,8 @@ MONTHS = (1, 12)
 DAYS_OF_WEEK = (0, 6)
 L_FIELDS = (DAYS_OF_WEEK, DAYS_OF_MONTH)
 FIELD_RANGES = (MINUTES, HOURS, DAYS_OF_MONTH, MONTHS, DAYS_OF_WEEK)
-MONTH_NAMES = zip(('jan', 'feb', 'mar', 'apr', 'may', 'jun',
-                   'jul', 'aug', 'sep', 'oct', 'nov', 'dec'), xrange(1, 13))
+MONTH_NAMES = list(zip(('jan', 'feb', 'mar', 'apr', 'may', 'jun',
+                   'jul', 'aug', 'sep', 'oct', 'nov', 'dec'), list(range(1, 13))))
 DEFAULT_EPOCH = (1970, 1, 1, 0, 0, 0)
 SUBSTITUTIONS = {
     "@yearly": "0 0 1 1 *",
@@ -83,7 +83,7 @@ class CronExpression(object):
 
         # parse the input
         if not self._special:
-            for key, value in SUBSTITUTIONS.items():
+            for key, value in list(SUBSTITUTIONS.items()):
                 if line.startswith(key):
                     line = line.replace(key, value)
                     break
@@ -164,7 +164,7 @@ class CronExpression(object):
             return self._check_trigger_normal(date_tuple, utc_offset)
 
     def _check_trigger_special(self, date_tuple, utc_offset=0):
-        print "TODOOOOOOO"
+        print("TODOOOOOOO")
         return True
 
     def _check_trigger_normal(self, date_tuple, utc_offset=0):
@@ -194,13 +194,13 @@ class CronExpression(object):
         mod_delta_min = mins - self.epoch[4] + mod_delta_hrs * 60
 
         # Makes iterating through like components easier.
-        quintuple = zip(
+        quintuple = list(zip(
             (mins, hour, day, month, given_dow),
             self.numerical_tab,
             self.string_tab,
             (mod_delta_min, mod_delta_hrs, mod_delta_day, mod_delta_mon,
                 mod_delta_day),
-            FIELD_RANGES)
+            FIELD_RANGES))
 
         for value, valid_values, field_str, delta_t, field_type in quintuple:
             # All valid, static values for the fields are stored in sets
@@ -290,7 +290,7 @@ class CronExpression(object):
         parse = parse.strip()
         increment = 1
         if parse == '*':
-            return set(xrange(minmax[0], minmax[1] + 1))
+            return set(range(minmax[0], minmax[1] + 1))
         elif parse.isdigit():
             # A single number still needs to be returned as a set
             value = int(parse)
@@ -318,25 +318,25 @@ class CronExpression(object):
 
             if prefix < suffix:
                 # Example: 7-10
-                return set(xrange(prefix, suffix + 1, increment))
+                return set(range(prefix, suffix + 1, increment))
             else:
                 # Example: 12-4/2; (12, 12 + n, ..., 12 + m*n) U (n_0, ..., 4)
-                noskips = list(xrange(prefix, minmax[1] + 1))
-                noskips+= list(xrange(minmax[0], suffix + 1))
+                noskips = list(range(prefix, minmax[1] + 1))
+                noskips+= list(range(minmax[0], suffix + 1))
                 return set(noskips[::increment])
 
 if __name__ == "__main__":
     job = CronExpression("@fullmoon")
-    print job
-    print job.check_trigger_now()
+    print(job)
+    print(job.check_trigger_now())
     #print job.check_trigger((2010, 11, 17, 0, 0))
     job = CronExpression("0 0 * * 1-5/2 find /var/log -delete")
-    print job
-    print job.check_trigger_now()
-    print job.check_trigger((2010, 11, 17, 0, 0))
-    print job.check_trigger((2012, 12, 21, 0 , 0))
+    print(job)
+    print(job.check_trigger_now())
+    print(job.check_trigger((2010, 11, 17, 0, 0)))
+    print(job.check_trigger((2012, 12, 21, 0 , 0)))
     job = CronExpression("@midnight Feed 'it'", (2010, 5, 1, 7, 0, -6))
-    print job
-    print job.check_trigger((2010, 5, 1, 7, 0), utc_offset=-6)
-    print job.check_trigger((2010, 5, 1, 16, 0), utc_offset=-6)
-    print job.check_trigger((2010, 5, 2, 1, 0), utc_offset=-6)
+    print(job)
+    print(job.check_trigger((2010, 5, 1, 7, 0), utc_offset=-6))
+    print(job.check_trigger((2010, 5, 1, 16, 0), utc_offset=-6))
+    print(job.check_trigger((2010, 5, 2, 1, 0), utc_offset=-6))

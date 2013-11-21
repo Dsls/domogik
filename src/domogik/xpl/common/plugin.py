@@ -350,7 +350,7 @@ class XplPlugin(BasePlugin, MQRep):
                     self.force_leave()
                     return []
             for a_device in device_list:
-                print type(a_device['name'])
+                print(type(a_device['name']))
                 self.log.info(u"- id : {0}  /  name : {1}  /  device type id : {2}".format(a_device['id'], \
                                                                                     a_device['name'], \
                                                                                     a_device['device_type_id']))
@@ -425,7 +425,7 @@ class XplPlugin(BasePlugin, MQRep):
                 self.new_devices.append(new_device)
             else:
                 self.log.debug(u"The device has already been detected since the plugin startup")
-            print self.new_devices
+            print(self.new_devices)
 
 
 
@@ -461,7 +461,7 @@ class XplPlugin(BasePlugin, MQRep):
         self.log.info(u"Check if there are pictures for the defined products")
         ok = True
         ok_product = None
-        if self.json_data.has_key('products'):
+        if 'products' in self.json_data:
             for product in self.json_data['products']:
                 ok_product = False
                 for ext in PRODUCTS_PICTURES_EXTENSIONS:
@@ -533,14 +533,14 @@ class XplPlugin(BasePlugin, MQRep):
     
     def _mdp_reply_helper_do(self, msg):
         contens = msg.get_data()
-        if 'command' in contens.keys():
-            if contens['command'] in self.helpers.keys():
-                if 'params' not in contens.keys():
+        if 'command' in list(contens.keys()):
+            if contens['command'] in list(self.helpers.keys()):
+                if 'params' not in list(contens.keys()):
                     contens['params'] = {}
                     params = []
                 else:
                     params = []
-                    for key, value in contens['params'].items():
+                    for key, value in list(contens['params'].items()):
                         params.append( "{0}='{1}'".format(key, value) )
                 command = "self.{0}(".format(self.helpers[contens['command']]['call'])
                 command += ", ".join(params)
@@ -557,8 +557,8 @@ class XplPlugin(BasePlugin, MQRep):
 
     def _mdp_reply_helper_help(self, data):
         content = data.get_data()
-        if 'command' in contens.keys():
-            if content['command'] in self.helpers.keys():
+        if 'command' in list(contens.keys()):
+            if content['command'] in list(self.helpers.keys()):
                 msg = MQMessage()
                 msg.set_action('helper.help.result')
                 msg.add_data('help', self.helpers[content['command']]['help'])
@@ -602,7 +602,7 @@ class XplPlugin(BasePlugin, MQRep):
         ### Send the ack over MQ Rep
         msg = MQMessage()
         msg.set_action('helper.list.result')
-        msg.add_data('actions', self.helpers.keys())
+        msg.add_data('actions', list(self.helpers.keys()))
         self.reply(msg.get())
 
     def _set_status(self, status):

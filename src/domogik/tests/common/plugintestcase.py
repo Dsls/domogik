@@ -72,7 +72,7 @@ class PluginTestCase(TemplateTestCase):
         print(u"Delete the current plugin configuration")
         self.assertTrue(delete_configuration("plugin", self.name, get_sanitized_hostname()))
         for key in self.configuration:
-            print(u"Set up configuration : {0} = {1}".format(key, self.configuration[key]))
+            print((u"Set up configuration : {0} = {1}".format(key, self.configuration[key])))
             self.assertTrue(configure("plugin", self.name, get_sanitized_hostname(), key, self.configuration[key]))
 
     # this function is the same for all plugins

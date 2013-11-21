@@ -258,7 +258,7 @@ class Manager(XplPlugin):
 
                         ### type = plugin
                         if type == "plugin":
-                            if self._plugins.has_key(name):
+                            if name in self._plugins:
                                 self.log.debug(u"The plugin '{0}' is already registered. Reloading its data".format(name))
                                 self._plugins[name].reload_data()
                             else:
@@ -339,7 +339,7 @@ class Manager(XplPlugin):
             "ERROR" : '\033[91m',
             "ENDC" : '\033[0m'
         }
-        if level not in colors.keys() and level != "NONE":
+        if level not in list(colors.keys()) and level != "NONE":
             level = "INFO"
         if not self._state_fifo.closed:
             if level == "NONE":
@@ -453,7 +453,7 @@ class Manager(XplPlugin):
                 msg.add_data(dev, self._device_types[dev])
         else:
             device_type = data.get_data()['device_type']
-            if self._device_types.has_key(device_type):
+            if device_type in self._device_types:
                 msg.add_data(device_type, self._device_types[device_type])
             else:
                 msg.add_data(device_type, None)
@@ -489,7 +489,7 @@ class Manager(XplPlugin):
         msg = MQMessage()
         msg.set_action('plugin.start.result')
 
-        if 'name' not in data.get_data().keys():
+        if 'name' not in list(data.get_data().keys()):
             status = False
             reason = "Plugin startup request : missing 'name' field"
             self.log.error(reason)

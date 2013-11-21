@@ -65,20 +65,20 @@ class TestSensor():
     def get_sensor_id(self):
         """ Call GET /device/<id> to get the sensor id corresponding to the sensor name
         """
-        print(u"Get the sensor id for device_id={0}, sensor_name={1}".format(self.device_id, self.sensor_name))
+        print((u"Get the sensor id for device_id={0}, sensor_name={1}".format(self.device_id, self.sensor_name)))
         response = requests.get("{0}/device/{1}".format(self.rest_url, self.device_id), \
                                  headers={'content-type':'application/x-www-form-urlencoded'})
-        print(u"Response : [{0}]".format(response.status_code))
+        print((u"Response : [{0}]".format(response.status_code)))
         #print(u"Response : [{0}] {1}".format(response.status_code, response.text))
         if response.status_code != 200:
             raise RuntimeError("Error when looking for the sensor id")
 
         # get the sensor id 
         device = json.loads(response.text)
-        if not device['sensors'].has_key(self.sensor_name):
+        if self.sensor_name not in device['sensors']:
             raise RuntimeError("There is no sensor named '{0}' for the device id {1}".format(self.sensor_name, self.device_id))
         sensor_id = device['sensors'][self.sensor_name]['id']
-        print(u"The sensor id is '{0}'".format(sensor_id))
+        print((u"The sensor id is '{0}'".format(sensor_id)))
         return sensor_id
 
 
@@ -86,10 +86,10 @@ class TestSensor():
         """ Call GET /sensor/<id> to get the last value of the sensor
             Returns a tuple : (timestamp, value)
         """
-        print(u"Get the last value for sensor id={0} / name={1}".format(self.sensor_id, self.sensor_name))
+        print((u"Get the last value for sensor id={0} / name={1}".format(self.sensor_id, self.sensor_name)))
         response = requests.get("{0}/sensor/{1}".format(self.rest_url, self.sensor_id), \
                                  headers={'content-type':'application/x-www-form-urlencoded'})
-        print(u"Response : [{0}]".format(response.status_code))
+        print((u"Response : [{0}]".format(response.status_code)))
         #print(u"Response : [{0}] {1}".format(response.status_code, response.text))
         if response.status_code != 200:
             raise RuntimeError("Error when looking for the sensor")
@@ -98,7 +98,7 @@ class TestSensor():
         sensor = json.loads(response.text)
         value = sensor['last_value']
         timestamp = sensor['last_received']
-        print(u"Last value : timestamp = {0} / value = {1}".format(timestamp, value))
+        print((u"Last value : timestamp = {0} / value = {1}".format(timestamp, value)))
         return (timestamp, value)
 
 
@@ -108,6 +108,6 @@ class TestSensor():
 if __name__ == "__main__":
 
     ts = TestSensor(1, "get_percent_used")
-    print ts.get_last_value()
+    print(ts.get_last_value())
  
 

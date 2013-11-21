@@ -132,7 +132,7 @@ class PkgReview:
         for idx in range(len(REPO_LIST)-1, -1, -1):
             if self.candidates[idx] == True:
                 break
-        print(u"The package can be pushed on the '%s' repository!!" % REPO_LIST[idx])
+        print((u"The package can be pushed on the '%s' repository!!" % REPO_LIST[idx]))
 
 
 
@@ -143,57 +143,57 @@ class PkgReview:
         """ title
            @param msg : message to display
         """
-        print(u"\n%s" % LINE_SEPARATOR)
-        print(u"%s" % msg)
+        print((u"\n%s" % LINE_SEPARATOR))
+        print((u"%s" % msg))
         print(LINE_SEPARATOR)
         
     def debug(self, msg):
         """ debug
            @param msg : message to display
         """
-        print(u"[ DEBUG        ] %s" % msg)
+        print((u"[ DEBUG        ] %s" % msg))
         
     def info(self, msg):
         """ info
            @param msg : message to display
         """
-        print(u"[ INFO         ] %s" % msg)
+        print((u"[ INFO         ] %s" % msg))
         
     def ok(self, msg):
         """ ok
            @param msg : message to display
         """
-        print(u"[ OK           ] %s" % msg)
+        print((u"[ OK           ] %s" % msg))
         
     def warning(self, msg):
         """ warning
            @param msg : message to display
         """
-        print(u"[ WARNING      ] %s" % msg)
+        print((u"[ WARNING      ] %s" % msg))
         
     def error(self, msg, repo):
         """ error
            @param msg : message to display
            @param repo : repo which will be refused because of the error : REPO_STABLE, REPO_TESTING, ....
         """
-        print(u"[ ERROR        ] %s" % msg)
+        print((u"[ ERROR        ] %s" % msg))
         self._no_more(repo)
         
     def critical(self, msg):
         """ Critical error. Display the message and quit
         """
-        print(u"[ CRITICAL     ] %s" % msg)
+        print((u"[ CRITICAL     ] %s" % msg))
         sys.exit(1)
 
     def ask_boolean(self, msg):
         """ ask  a question for the user. Returns "y" or "n"
            @param msg : message to display
         """
-        print(u"[ MANUAL CHECK ] %s" % msg)
+        print((u"[ MANUAL CHECK ] %s" % msg))
         rep = 'x'
         # the user will just answer yes or no
         while rep not in ['y', 'n']:
-            rep = raw_input("%s[y/n] > " % LINE_BLANK)
+            rep = input("%s[y/n] > " % LINE_BLANK)
         return rep
     
     def ask(self, msg, repo = None):
@@ -202,19 +202,19 @@ class PkgReview:
            @param repo : if != None : repo which will be refused because of the error : REPO_STABLE, REPO_TESTING, ....
                          if None : the candidate repo will be asked to the user
         """
-        print(u"[ MANUAL CHECK ] %s" % msg)
+        print((u"[ MANUAL CHECK ] %s" % msg))
         rep = 'x'
         # the user will just answer yes or no
         if repo != None:
             while rep not in ['y', 'n']:
-                rep = raw_input("%sIs this ok ? [y/n] > " % LINE_BLANK)
+                rep = input("%sIs this ok ? [y/n] > " % LINE_BLANK)
             if rep == 'n':
                 self._no_more(repo)
 
         # the user will have to choose the repo
         else:
             while rep not in REPO_LIST:
-                rep = raw_input("%sFor which repo is this valid ? %s > " % (LINE_BLANK, REPO_LIST[0:REPO_NB]))
+                rep = input("%sFor which repo is this valid ? %s > " % (LINE_BLANK, REPO_LIST[0:REPO_NB]))
             # we remove the next repo in the list (the one better than the choosen one)
             self._no_more(REPO_LIST[1+REPO_LIST.index(rep)])
         return rep

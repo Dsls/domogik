@@ -81,15 +81,15 @@ class Sniffer(XplPlugin):
             time = "%s:%s:%s" % (self._format(ldt[3]), self._format(ldt[4]), self._format(ldt[5]))
             display = "%s" % time
             #self.log.info(u"%s - %s" % (datetime.datetime.now(), message))
-            print(u"%s - %s %s hop=%s source=%s target=%s" % (display,
+            print((u"%s - %s %s hop=%s source=%s target=%s" % (display,
                                                           message.type,
                                                           message.schema,
                                                           message.hop_count,
                                                           message.source,
-                                                          message.target))
+                                                          message.target)))
             idx = 0
             for elt in message.data:
-                print(u"  %s=%s" % (elt, message.data[elt]))
+                print((u"  %s=%s" % (elt, message.data[elt])))
                 idx += 1
                 if idx == 4:
                     print(u"  ...")

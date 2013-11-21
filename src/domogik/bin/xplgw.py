@@ -118,9 +118,9 @@ class XplManager(XplPlugin):
 			    dev = self._db.get_device(int(cmd.device_id))
 			    msg = XplMessage()
                             # update the client list
-                            if not dev['client_id'] in self.client_xpl_map.keys():
+                            if not dev['client_id'] in list(self.client_xpl_map.keys()):
                                 self._load_client_to_xpl_target()
-                            if not dev['client_id'] in self.client_xpl_map.keys():
+                            if not dev['client_id'] in list(self.client_xpl_map.keys()):
                                 failed = "Can not fincd xpl source for {0} client_id".format(dev['client_id'])
                             else:
                                 msg.set_target(self.client_xpl_map[dev['client_id']])

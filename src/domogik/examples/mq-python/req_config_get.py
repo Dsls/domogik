@@ -12,5 +12,5 @@ msg.add_data('type', 'plugin')
 msg.add_data('host', 'darkstar')
 msg.add_data('name', 'diskfree')
 msg.add_data('key', 'configured')
-print cli.request('dbmgr', msg.get(), timeout=10).get()
+print(cli.request('dbmgr', msg.get(), timeout=10).get())
 

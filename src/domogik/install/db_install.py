@@ -5,7 +5,7 @@ import os
 import pwd
 import sys
 import platform
-import ConfigParser
+import configparser
 import argparse
 import shutil
 import errno
@@ -15,8 +15,8 @@ import tempfile
 from domogik.common import sql_schema
 from domogik.common import database
 from sqlalchemy import create_engine, MetaData, Table
-from alembic.config import Config
-from alembic import command
+from .alembic.config import Config
+from .alembic import command
 
 
 BLUE = '\033[94m'
@@ -33,13 +33,13 @@ _url = _db.get_url_connection_string()
 _engine = create_engine(_url)
 
 def info(msg):
-    print(u"%s [ %s ] %s" % (BLUE,msg,ENDC))
+    print((u"%s [ %s ] %s" % (BLUE,msg,ENDC)))
 def ok(msg):
-    print(u"%s ==> %s  %s" % (OK,msg,ENDC))
+    print((u"%s ==> %s  %s" % (OK,msg,ENDC)))
 def warning(msg):
-    print(u"%s ==> %s  %s" % (WARNING,msg,ENDC))
+    print((u"%s ==> %s  %s" % (WARNING,msg,ENDC)))
 def fail(msg):
-    print(u"%s ==> %s  %s" % (FAIL,msg,ENDC))
+    print((u"%s ==> %s  %s" % (FAIL,msg,ENDC)))
 
 def install_or_upgrade_db():
     info("Installing or upgrading the db")
@@ -65,10 +65,10 @@ def backup_existing_database(confirm=True):
         warning("Can't backup your database, only mysql is supported (you have : %s)" % _db.get_db_type())
         return
     if confirm:
-        answer = raw_input("Do you want to backup your database? [Y/n] ")
+        answer = input("Do you want to backup your database? [Y/n] ")
         if answer == 'n':
             return
-    answer = raw_input("Backup file? [%s] " % DB_BACKUP_FILE)
+    answer = input("Backup file? [%s] " % DB_BACKUP_FILE)
     if answer != '':
         bfile = answer
     else:

@@ -60,7 +60,7 @@ class TestPlugin(MQAsyncSub):
     def request_startup(self):
         """ Request the plugin to start over the manager
         """
-        print(u"Request plugin startup to the manager for '{0}' on '{1}'".format(self.name, self.host))
+        print((u"Request plugin startup to the manager for '{0}' on '{1}'".format(self.name, self.host)))
         cli = MQSyncReq(zmq.Context())
         msg = MQMessage()
         msg.set_action('plugin.start.do')
@@ -70,7 +70,7 @@ class TestPlugin(MQAsyncSub):
         if result:
             msgid, content = result.get()
             content = json.loads(content)
-            print(u"Response from the manager : {0}".format(content))
+            print((u"Response from the manager : {0}".format(content)))
             if content['status']:
                 print(u"Plugin started")
                 return True
@@ -83,7 +83,7 @@ class TestPlugin(MQAsyncSub):
     def request_stop(self):
         """ Request the plugin to stop
         """
-        print(u"Request plugin to stop : '{0}' on '{1}'".format(self.name, self.host))
+        print((u"Request plugin to stop : '{0}' on '{1}'".format(self.name, self.host)))
         cli = MQSyncReq(zmq.Context())
         msg = MQMessage()
         msg.set_action('plugin.stop.do')
@@ -93,7 +93,7 @@ class TestPlugin(MQAsyncSub):
         if result:
             msgid, content = result.get()
             content = json.loads(content)
-            print(u"Response : {0}".format(content))
+            print((u"Response : {0}".format(content)))
             if content['status']:
                 print(u"Plugin stopped")
                 return True
@@ -117,7 +117,7 @@ class TestPlugin(MQAsyncSub):
         if self.plugin_status == event:
             return True
         else:
-            print(u"Plugin not in status '{0}' : status = {1}".format(event, self.plugin_status))
+            print((u"Plugin not in status '{0}' : status = {1}".format(event, self.plugin_status)))
             return False
 
     def on_message(self, msgid, content):
@@ -126,7 +126,7 @@ class TestPlugin(MQAsyncSub):
             @content : message content
         """
         if msgid == "plugin.status":
-            print(u"Message received : msgid={0}, content={1}".format(msgid, content))
+            print((u"Message received : msgid={0}, content={1}".format(msgid, content)))
             self.plugin_status = content['event']
             if content['name'] == self.name and \
                content['type'] == self.type and \

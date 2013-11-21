@@ -108,10 +108,10 @@ class ProcessInfo():
         if self._callback != None:
             self._callback(self.pid, values)
         else:
-            print(u"%s > %s" % (self.pid, values))
+            print((u"%s > %s" % (self.pid, values)))
 
 def display(pid, data):
-    print(u"DATA (%s) = %s" % (pid, str(data)))
+    print((u"DATA (%s) = %s" % (pid, str(data))))
 
 if __name__ == "__main__":
     my_process = ProcessInfo(3529)

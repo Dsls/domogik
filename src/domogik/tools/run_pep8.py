@@ -35,7 +35,7 @@ Implements
 @organization: Domogik
 """
 
-import pep8
+from . import pep8
 from os.path import abspath, dirname
 
 

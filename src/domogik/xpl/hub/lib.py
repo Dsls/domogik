@@ -56,7 +56,7 @@ from time import time
 from sys import stdout
 from threading import Thread, Event
 from netifaces import interfaces, ifaddresses, AF_INET
-import ConfigParser
+import configparser
 import traceback
 import sys
 #import copy
@@ -115,13 +115,13 @@ class Hub():
         self.is_daemon = daemon
 
         #print(u"Domogik xPL Hub (python) v%s" % VERSION)
-        print(u"Domogik xPL Hub (python) v%s" % 666)
+        print((u"Domogik xPL Hub (python) v%s" % 666))
         print(u"Starting...")
         print(u"- Reading configuration...")
 
         ### Read hub options
         # read config file
-        config_p = ConfigParser.ConfigParser()
+        config_p = configparser.ConfigParser()
         try:
             with open(CONFIG_FILE) as cfg_file:
                 config_p.readfp(cfg_file)
@@ -131,7 +131,7 @@ class Hub():
                     config[k] = v
 
         except:
-            print(u"ERROR : Unable to open configuration file '%s' : %s" % (CONFIG_FILE, traceback.format_exc()))
+            print((u"ERROR : Unable to open configuration file '%s' : %s" % (CONFIG_FILE, traceback.format_exc())))
             return
  
         ### Initiate the logger
@@ -651,7 +651,7 @@ class UdpHub(DatagramProtocol):
             self._inc_invalid_counter(client_id)
             if self._do_log_invalid_data:
                 self._log_invalid_data(client_id, datagram)
-                print(u"Invalid message : %s" % datagram)
+                print((u"Invalid message : %s" % datagram))
             return
 
         # TODO : needed ????

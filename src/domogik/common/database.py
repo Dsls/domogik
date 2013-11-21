@@ -130,7 +130,7 @@ class DbHelper():
         config = cfg.load()
         self.__db_config = dict(config[1])
 
-        if self.__db_config.has_key("recycle_pool"):
+        if "recycle_pool" in self.__db_config:
             #self.log.info(u"User value for recycle pool : {0}".format(self.__db_config['recycle_pool']))
             pool_recycle = int(self.__db_config['recycle_pool'])
         else:
@@ -608,7 +608,7 @@ class DbHelper():
             if 'xpl_command' in command_in_client_data:
                 self.log.debug(u"Device creation : inserting data in core_xplcommand for '{0}'...".format(a_command))
                 x_command = client_data['xpl_commands'][command_in_client_data['xpl_command']]
-                if x_command['xplstat_name'] in created_xpl_stats.keys():
+                if x_command['xplstat_name'] in list(created_xpl_stats.keys()):
                     xplstatid = created_xpl_stats[x_command['xplstat_name']]
                 else:
                     xplstat_in_client_data = client_data['xpl_stats'][x_command['xplstat_name']]

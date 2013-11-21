@@ -134,7 +134,7 @@ class ScenarioManager:
                         self.__ask_instance(uid.key, self._actions_mapping, uid.uuid)
                 # now all uuids are created go and install the condition
                 self.create_scenario(scenario.name, scenario.json, store=False)
-        for (name, cond) in self._conditions.items():
+        for (name, cond) in list(self._conditions.items()):
             cond.parse_condition()
 
     def __ask_instance(self, obj, mapping, set_uuid=None):
@@ -200,7 +200,7 @@ class ScenarioManager:
     def shutdown(self):
         """ Callback to shut down all parameters
         """
-        for cond in self._conditions.keys():
+        for cond in list(self._conditions.keys()):
             self.delete_scenario(cond, db_delete=False)
 
     def generic_trigger(self, test_i):
@@ -234,8 +234,8 @@ class ScenarioManager:
         Does this in the mappings (for actions and tests)
         """
         _uuid = str(uuid.uuid4())
-        while _uuid in self._tests_mapping.keys() \
-                or uuid in self._actions_mapping.keys():
+        while _uuid in list(self._tests_mapping.keys()) \
+                or uuid in list(self._actions_mapping.keys()):
             _uuid = str(uuid.uuid4())
         return _uuid
 
@@ -257,7 +257,7 @@ class ScenarioManager:
             # delete from the db
             with self._db.session_scope():
                 scen = self._db.get_scenario_by_name(name)
-                print scen
+                print(scen)
                 if scen:
                     self._db.del_scenario(scen.id)
             self.log.info(u"Scenario {0} deleted".format(name))
@@ -272,7 +272,7 @@ class ScenarioManager:
             - actions => the json that will be used for creating the actions instances
         @Return {'name': name} or raise exception
         """
-        if name in self._conditions.keys():
+        if name in list(self._conditions.keys()):
             self.log.error(u"A scenario with name '{0}' already exists.".format(name))
             return {'status': 'NOK', 'msg': 'a scenario with this name already exists'}
 
@@ -283,8 +283,8 @@ class ScenarioManager:
             self.log.debug(e)
             return {'status': 'NOK', 'msg': 'invallid json'}
 
-        if 'condition' not in payload.keys() \
-                or 'actions' not in payload.keys():
+        if 'condition' not in list(payload.keys()) \
+                or 'actions' not in list(payload.keys()):
             msg = u"the json for the scenario does not contain condition or actions for scenario {0}".format(name)
             self.log.error(msg)
             return {'status': 'NOK', 'msg': msg}
@@ -297,7 +297,7 @@ class ScenarioManager:
         self._conditions_actions[name] = []
         self.log.debug(u"Create condition {0} with payload {1}".format(name, payload['condition']))
         # build a list of actions
-        for action in payload['actions'].keys():
+        for action in list(payload['actions'].keys()):
             # action is now a tuple
             #   (uid, params)
             self._conditions_actions[name].append(action) 
@@ -428,46 +428,45 @@ class ScenarioManager:
             #get the list of classes in the module
             classes = [m for m in inspect.getmembers(imported_mod) if inspect.isclass(m[1])]
             # Filter in order to keep only the classes that belong to domogik package and are not abstract
-            res.extend([(module[1] + "." + c[0], c[1]) for c in filter(
-                lambda x: x[1].__module__.startswith("domogik.common.scenario.") and not x[0].startswith("Abstract"), classes)])
+            res.extend([(module[1] + "." + c[0], c[1]) for c in [x for x in classes if x[1].__module__.startswith("domogik.common.scenario.") and not x[0].startswith("Abstract")]])
         return res
 
 
 if __name__ == "__main__":
     import logging
     s = ScenarioManager(logging)
-    print "==== list of conditions ===="
-    print s.list_conditions()
-    print "==== list of parameters ===="
-    print s.list_parameters()
+    print("==== list of conditions ====")
+    print(s.list_conditions())
+    print("==== list of parameters ====")
+    print(s.list_parameters())
 
-    print "\n==== Create condition ====\n"
-    print "  * get list of tests as json:"
+    print("\n==== Create condition ====\n")
+    print("  * get list of tests as json:")
     t = s.list_tests()
-    print t
+    print(t)
     tests = json.loads(t)
-    print "  * Create a test instance of %s (%s)" % (tests.keys()[0], tests.values()[0]["description"])
-    uid = s.ask_test_instance(tests.keys()[0])
-    print "  * asked for an instance of %s, got uuid %s" % (tests.keys()[0], uid)
-    print "  * listing parameters needed by the test :"
+    print("  * Create a test instance of %s (%s)" % (list(tests.keys())[0], list(tests.values())[0]["description"]))
+    uid = s.ask_test_instance(list(tests.keys())[0])
+    print("  * asked for an instance of %s, got uuid %s" % (list(tests.keys())[0], uid))
+    print("  * listing parameters needed by the test :")
     test_data = tests["textinpage.TextInPageTest"]
     for k in test_data["parameters"]:
         v = test_data["parameters"][k]
-        print "    - %s" % k
-        print "      > type : %s" % v["type"]
-        print "      > expected tokens :"
+        print("    - %s" % k)
+        print("      > type : %s" % v["type"])
+        print("      > expected tokens :")
         for tok in v["expected"]:
             vtok = v["expected"][tok]
-            print "        * %s :" % tok
-            print "          - default : %s" % vtok["default"]
-            print "          - values : %s" % vtok["values"]
-            print "          - type : %s" % vtok["type"]
-            print "          - description : %s" % vtok["description"]
-            print "          - filters : %s" % vtok["filters"]
-    print "  * Generating JSON with values :"
-    print "    - url.urlpath = http://www.google.fr"
-    print "    - url.interval = 5"
-    print "    - text.text = sometext"
+            print("        * %s :" % tok)
+            print("          - default : %s" % vtok["default"])
+            print("          - values : %s" % vtok["values"])
+            print("          - type : %s" % vtok["type"])
+            print("          - description : %s" % vtok["description"])
+            print("          - filters : %s" % vtok["filters"])
+    print("  * Generating JSON with values :")
+    print("    - url.urlpath = http://www.google.fr")
+    print("    - url.interval = 5")
+    print("    - text.text = sometext")
     src = """{ "NOT" : { "%s" : {
             "url": {
                 "urlpath": "http://www.google.fr",
@@ -478,15 +477,15 @@ if __name__ == "__main__":
             }
         }
     }}""" % uid
-    print "  * JSON is : %s" % json.dumps(src)
+    print("  * JSON is : %s" % json.dumps(src))
     p = json.loads(json.dumps(src))
-    print p
-    print "  * Create condition 'foo' with previous payload"
+    print(p)
+    print("  * Create condition 'foo' with previous payload")
     c = s.create_condition("foo", json.dumps(src))
-    print "    - condition created : %s" % c
-    print "    - parse condition"
+    print("    - condition created : %s" % c)
+    print("    - parse condition")
     c.parse_condition()
-    print "    - generated condition is : %s" % c.get_parsed_condition()
-    print "    - evaluate the condition, result is %s" % c.eval_condition()
+    print("    - generated condition is : %s" % c.get_parsed_condition())
+    print("    - evaluate the condition, result is %s" % c.eval_condition())
     s.shutdown()
-    print "  - call force_leave to stop."
+    print("  - call force_leave to stop.")

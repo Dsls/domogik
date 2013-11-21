@@ -50,12 +50,12 @@ def ask(question):
     """
 
     while True:
-        print(u"{0}\n[yes/no]".format(question))
+        print((u"{0}\n[yes/no]".format(question)))
         # raw_input returns the empty string for "enter"
         yes = set(['yes','y', 'ye'])
         no = set(['no','n'])
         
-        choice = raw_input().lower()
+        choice = input().lower()
         if choice in yes:
            return True
         elif choice in no:
@@ -74,14 +74,14 @@ def check_domogik_is_running():
     for chk in to_check:
         status = is_already_launched(None, chk, False)
         if not status[0]:
-            print("component {0} is not running".format(chk))
+            print(("component {0} is not running".format(chk)))
             ret = False
 
     to_check = ['rest', 'xplgw', 'dbmgr', 'manager', 'admin', 'scenario']
     for chk in to_check:
         status = is_already_launched(None, chk)
         if not status[0]:
-            print("component {0} is not running".format(chk))
+            print(("component {0} is not running".format(chk)))
             ret = False
     return ret
 
@@ -107,7 +107,7 @@ def delete_configuration(type, name, host):
     msg.add_data('name', name)
     result = cli.request('dbmgr', msg.get(), timeout=10)
     if result:
-        print(result.get())
+        print((result.get()))
         return True
     else:
         raise RuntimeError("Timeout while deleting configuration for {0}-{1}.{2}".format(type, name, host))
@@ -122,7 +122,7 @@ def configure(type, name, host, key, value):
     msg.add_data('data', {key : value})
     result = cli.request('dbmgr', msg.get(), timeout=10)
     if result:
-        print(result.get())
+        print((result.get()))
         return True
     else:
         raise RuntimeError("Error while setting configuration for {0}-{1}.{2} : {3} = {4}".format(type, name, host, key, value))

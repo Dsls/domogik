@@ -108,8 +108,8 @@ class Logger():
         '''
         if logger_name is not None:
             return self.__class__.logger[logger_name]
-        elif len(self.__class__.logger.keys()) == 1:
-            return self.__class__.logger[self.__class__.logger.keys()[0]]
+        elif len(list(self.__class__.logger.keys())) == 1:
+            return self.__class__.logger[list(self.__class__.logger.keys())[0]]
         else:
             raise AttributeError("You must specify a loggger name")
 

@@ -100,7 +100,7 @@ class AbstractParameter:
         """
         if not entry:
             return self._list_of_values
-        elif entry not in self._list_of_values.keys():
+        elif entry not in list(self._list_of_values.keys()):
             return {}
         else:
             return self._list_of_values[entry]
@@ -136,7 +136,7 @@ class AbstractParameter:
         @return a list of expected parameters, or 
         """
         exp = self._expected
-        for item in exp.keys():
+        for item in list(exp.keys()):
             exp[item]["default"] = self.get_default_value(item)
             exp[item]["values"] = self.get_list_of_values(item)
             exp[item]["filters"] = self.get_filters(item)

@@ -62,7 +62,7 @@ if __name__ == "__main__":
     mapping = {}
     mapping['990137de-25c9-4d47-8598-bb2eaec18e35'] = TextInPageTest(logging, trigger = mytrigger)
     c = Condition(logging, cond1, mapping)
-    print "Condition created : {0}".format(c)
-    print "Trying to parse the condition ..."
+    print("Condition created : {0}".format(c))
+    print("Trying to parse the condition ...")
     pc = c.parse_condition()
-    print "Condition parsed, result is {0}, condition is {1} ".format(pc, c.get_parsed_condition())
+    print("Condition parsed, result is {0}, condition is {1} ".format(pc, c.get_parsed_condition()))

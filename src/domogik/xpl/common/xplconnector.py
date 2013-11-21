@@ -257,7 +257,7 @@ class Manager:
                 if len(message.to_packet()) > 1472:
                     fragments = FragmentedXplMessage.fragment_message(message, self._fragment_uid)
                     self._sent_fragments_buffer[self._fragment_uid] = fragments
-                    for fragment in fragments.keys():
+                    for fragment in list(fragments.keys()):
                         self.p.log.debug("fragment send")
                         self._UDPSock.sendto(fragments[fragment].__str__(), (self._broadcast, 3865))
                 else:
@@ -357,7 +357,7 @@ class Manager:
                                     self._received_fragments_buffer[key][mess.data["partid"].split('/')[0]] = mess
                                     if len(self._received_fragments_buffer[key]) == int(mess.data["partid"].split('/')[1].split(':')[0]):
                                         nf = FragmentedXplMessage()
-                                        for f in self._received_fragments_buffer[key].keys():
+                                        for f in list(self._received_fragments_buffer[key].keys()):
                                             nf.add_fragment(self._received_fragments_buffer[key][f])
                                         mess = nf.build_message()
                                         update = True
@@ -462,7 +462,7 @@ class Listener:
         #The message match the filter, we can call  the callback function
         if ok:
             try:
-                if self._cb_params != {} and self._callback.func_code.co_argcount > 1:  
+                if self._cb_params != {} and self._callback.__code__.co_argcount > 1:  
                     thread = threading.Thread(target=self._callback, args = (message, self._cb_params), name="Manager-new-message-cb-%s" % suffixe)
                 else:
                     thread = threading.Thread(target=self._callback, args = (message,), name="Manager-new-message-cb-%s" % suffixe)

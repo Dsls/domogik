@@ -94,8 +94,8 @@ class AbstractCondition:
 
     def destroy(self):
         ret = []
-        print self._mapping
-        for (uid, test) in self._mapping.items():
+        print(self._mapping)
+        for (uid, test) in list(self._mapping.items()):
             if type(test) not in [str, unicode]: 
                 test.destroy()
             ret.append(uid)
@@ -121,7 +121,7 @@ class AbstractCondition:
         return self._mapping
 
     def _set_condition_for_tests(self):
-        for (uid, test) in self._mapping.items():
+        for (uid, test) in list(self._mapping.items()):
             test.set_condition(self)
 
     def __parse_boolean(self, json):
@@ -133,10 +133,10 @@ class AbstractCondition:
         if type(json) == tuple:
             json = {json[0]: json[1]}
         if type(json) == dict:
-            for k in json.keys():
+            for k in list(json.keys()):
                 v = json[k]
                 if k in ["AND", "OR"]:
-                    return "( {0} {1} {2} )".format(self.__parse_boolean(v.items()[0]), k.lower(), self.__parse_boolean(v.items()[1]))
+                    return "( {0} {1} {2} )".format(self.__parse_boolean(list(v.items())[0]), k.lower(), self.__parse_boolean(list(v.items())[1]))
                 elif k == "NOT":
                     return "not {0}".format(self.__parse_boolean(v))
                 elif type(v) == dict:

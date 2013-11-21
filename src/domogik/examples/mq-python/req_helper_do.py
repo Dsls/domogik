@@ -10,5 +10,5 @@ msg = MQMessage()
 msg.set_action('helper.do')
 msg.add_data('command', 'scan')
 msg.add_data('params', {'test1': 'foo', 'test2': 'bar'} )
-print cli.request('velbus', msg.get(), timeout=10).get()
+print(cli.request('velbus', msg.get(), timeout=10).get())
 

@@ -62,8 +62,8 @@ class AdminWebSocket(WebSocketHandler):
             cli.write_message(time.ctime())
 
     def open(self):
-	print"open"
-	print self
+	print("open")
+	print(self)
         AdminWebSocket.clients.add(self)
 
     def on_close(self):

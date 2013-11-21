@@ -237,7 +237,7 @@ class PackageInstaller():
             - the package is a folder : ask before deleting it
         """
         # TODO
-        print "@@@ TODO @@@"
+        print("@@@ TODO @@@")
 
     def is_json_ok(self, json_file = None, data = None):
         """ Check if the json file is OK

@@ -11,5 +11,5 @@ msg.set_action('device.get')
 msg.add_data('type', 'plugin')
 msg.add_data('name', 'diskfree')
 msg.add_data('host', 'darkstar')
-print cli.request('dbmgr', msg.get(), timeout=10).get()
+print(cli.request('dbmgr', msg.get(), timeout=10).get())
 

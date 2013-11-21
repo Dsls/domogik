@@ -67,7 +67,7 @@ class Serial():
             @param stopbits : useless, just for compatibility
         """
         # there is nothing to do, excepting logging!
-        print(u"Fake serial device created. The fake data in the file '{0}' will be used".format(device))
+        print((u"Fake serial device created. The fake data in the file '{0}' will be used".format(device)))
 
         # load the json file
         try:
@@ -107,14 +107,14 @@ class Serial():
             if self.history_idx < len(self.data['history']):
                 action = self.data['history'][self.history_idx]['action']
                 description = self.data['history'][self.history_idx]['description']
-                print(u"Action = {0} / Description = {1}".format(action, description))
+                print((u"Action = {0} / Description = {1}".format(action, description)))
                 if action == 'data':
                     value = binascii.unhexlify(self.data['history'][self.history_idx]['data'])
                     self.history_idx += 1
                     return value
                 if action == 'wait':
                     delay = self.data['history'][self.history_idx]['delay']
-                    print(u" => wait for {0}s".format(delay))
+                    print((u" => wait for {0}s".format(delay)))
                     self.history_idx += 1
                     time.sleep(delay)
             # and if the history is finished, handle the loop
@@ -127,14 +127,14 @@ class Serial():
                         self.loop_idx = 0
                     action = self.data['loop'][self.loop_idx]['action']
                     description = self.data['loop'][self.loop_idx]['description']
-                    print(u"Action = {0} / Description = {1}".format(action, description))
+                    print((u"Action = {0} / Description = {1}".format(action, description)))
                     if action == 'data':
                         value = binascii.unhexlify(self.data['loop'][self.loop_idx]['data'])
                         self.loop_idx += 1
                         return value
                     if action == 'wait':
                         delay = self.data['loop'][self.loop_idx]['delay']
-                        print(u" => wait for {0}s".format(delay))
+                        print((u" => wait for {0}s".format(delay)))
                         self.loop_idx += 1
                         time.sleep(delay)
                

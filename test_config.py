@@ -50,13 +50,13 @@ ENDC = '\033[0m'
 user = ''
 
 def info(msg):
-    print("{0} [ {1} ] {2}".format(BLUE,msg,ENDC))
+    print(("{0} [ {1} ] {2}".format(BLUE,msg,ENDC)))
 def ok(msg):
-    print("{0} ==> {1}  {2}".format(OK,msg,ENDC))
+    print(("{0} ==> {1}  {2}".format(OK,msg,ENDC)))
 def warning(msg):
-    print("{0} ==> {1}  {2}".format(WARNING,msg,ENDC))
+    print(("{0} ==> {1}  {2}".format(WARNING,msg,ENDC)))
 def fail(msg):
-    print("{0} ==> {1}  {2}".format(FAIL,msg,ENDC))
+    print(("{0} ==> {1}  {2}".format(FAIL,msg,ENDC)))
 
 def am_i_root():
     info("Check this script is started as root")
@@ -83,7 +83,7 @@ def test_imports():
         warning("Can't import sqlalchemy, please install it")
         good = False
     try:
-        import httplib
+        import http.client
     except ImportError:
         warning("Can't import httplib, please install it by hand (>= 2) or exec ./setup.py develop or ./setup.py install")
         good = False
@@ -109,7 +109,7 @@ def test_config_files():
         file = "/etc/conf.d/domogik"
     f = open(file,"r")
     r = f.readlines()
-    lines = filter(lambda x: not x.startswith('#') and x != '\n',r)
+    lines = [x for x in r if not x.startswith('#') and x != '\n']
     f.close()
     #user = ''
     manager_params = ''
@@ -201,8 +201,8 @@ def _check_port_availability(s_ip, s_port, udp = False):
 
 def test_user_config_file(user_home, user_entry):
     info("Check user config file contents")
-    import ConfigParser
-    config = ConfigParser.ConfigParser()
+    import configparser
+    config = configparser.ConfigParser()
     config.read("/etc/domogik/domogik.cfg")
 
     #check [domogik] section

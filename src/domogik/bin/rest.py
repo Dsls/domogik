@@ -43,7 +43,6 @@ from domogik.mq.message import MQMessage
 from domogik.common.configloader import Loader
 from domogik.common.utils import get_ip_for_interfaces
 import locale
-from Queue import Queue, Empty, Full
 import tempfile
 import traceback
 import datetime

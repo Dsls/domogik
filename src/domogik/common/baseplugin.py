@@ -66,7 +66,7 @@ class BasePlugin():
         dmg_user = Default.get("DOMOGIK_USER")
         logname = pwd.getpwuid(os.getuid())[0]
         if dmg_user != logname:
-            print(u"ERROR : this Domogik part must be run with the user defined in /etc/default/domogik as DOMOGIK_USER : %s" % dmg_user)
+            print((u"ERROR : this Domogik part must be run with the user defined in /etc/default/domogik as DOMOGIK_USER : %s" % dmg_user))
             sys.exit(1)
 
         if name is not None:

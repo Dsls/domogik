@@ -45,7 +45,7 @@ try:
     import configparser
 except ImportError:
     # python 2
-    import ConfigParser as configparser
+    import configparser as configparser
 import threading
 import time
 import fcntl

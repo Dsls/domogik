@@ -35,7 +35,7 @@ class Helper()
 @organization: Domogik
 """
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 class HelperError(Exception):
     """ Helper exceptions
@@ -78,7 +78,7 @@ class Helper():
         if args == None:
             args = []
         cmd = cmd.lower()
-        print(u"Helper : %s %s" % (cmd, str(args)))
+        print((u"Helper : %s %s" % (cmd, str(args))))
         if cmd == "help":
             return self.help()
         if cmd == None:
@@ -86,9 +86,9 @@ class Helper():
 
         # unquote parameters
         for idx, val in enumerate(args):
-            args[idx] = unicode(urllib.unquote(val), "UTF-8")
-            print(u"%s - %s - %s" % (str(idx), args[idx], 
-                                    unicode(urllib.unquote(val), "UTF-8")))
+            args[idx] = unicode(urllib.parse.unquote(val), "UTF-8")
+            print((u"%s - %s - %s" % (str(idx), args[idx], 
+                                    unicode(urllib.parse.unquote(val), "UTF-8"))))
 
         try:
             if len(args) < self.commands[cmd]["min_args"]:

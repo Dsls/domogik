@@ -10,6 +10,6 @@ msg = MQMessage()
 msg.set_action('cmd.send')
 msg.add_data('cmdid', 1)
 msg.add_data('cmdparams', {'level': 0})
-print cli.request('xplgw', msg.get(), timeout=10).get()
+print(cli.request('xplgw', msg.get(), timeout=10).get())
 
 

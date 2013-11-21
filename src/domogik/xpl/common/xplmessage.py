@@ -127,7 +127,7 @@ try:
                              =
                              (?P<data_value>[%s].*)$
                          )
-                     """ % re.escape(''.join(chr(x) for x in xrange(32, 256)))
+                     """ % re.escape(''.join(chr(x) for x in range(32, 256)))
 except NameError:
     # python 3
     REGEXP_SINGLE_DATA = r"""(?P<data>
@@ -289,7 +289,7 @@ class XplMessage(object):
         if match_source is None:
             raise XplMessageError("Invalid source (%s)" % source)
         match_source_dict = match_source.groupdict()
-        for key, value in match_source_dict.iteritems():
+        for key, value in match_source_dict.items():
             setattr(self, key, value)
 
     def set_target(self, target):
@@ -304,7 +304,7 @@ class XplMessage(object):
         if match_target is None:
             raise XplMessageError("Invalid target (%s)" % target)
         match_target_dict = match_target.groupdict()
-        for key, value in match_target_dict.iteritems():
+        for key, value in match_target_dict.items():
             setattr(self, key, value)
 
     def set_header(self, hop_count=None, source=None, target=None):
@@ -338,7 +338,7 @@ class XplMessage(object):
         if match_schema is None:
             raise XplMessageError("Invalid schema (%s)" % schema)
         match_schema_dict = match_schema.groupdict()
-        for key, value in match_schema_dict.iteritems():
+        for key, value in match_schema_dict.items():
             setattr(self, key, value)
 
     def add_single_data(self, name, value):
@@ -361,7 +361,7 @@ class XplMessage(object):
         @param data: message data, as name/value pairs
         @type data: dict or L{OrderedDict}
         """
-        for name, value in data.iteritems():
+        for name, value in data.items():
             self.add_single_data(name, value)
 
     def set_data(self, data):
@@ -423,7 +423,7 @@ class XplMessage(object):
         packet += "}\n"
         packet += "%s\n" % self.schema
         packet += "{\n"
-        for key, value in self.data.iteritems():
+        for key, value in self.data.items():
             if type(value) == list:
                 for v in value:
                     packet += "%s=%s\n" % (key, v)
@@ -552,7 +552,7 @@ class FragmentedXplMessage(object):
         msg.set_target(self._mess_to)
         for i in range(1, self._fragment_count + 1):
             f = self._fragments[i]
-            for d in f.data.keys():
+            for d in list(f.data.keys()):
                 if d not in ["partid","schema"]:
                     msg.add_single_data(d, f.data[d])
         return msg

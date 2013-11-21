@@ -70,7 +70,7 @@ class XplMessageTest(unittest.TestCase):
         """ Test XplMessage.set_hop_count() method.
         """
         self.assertRaises(XplMessageError, self.__xpl_message.set_hop_count, 0)
-        for i in xrange(1, 10):
+        for i in range(1, 10):
             self.__xpl_message.set_hop_count(i)
             self.assertEqual(self.__xpl_message.hop_count, i)
         self.assertRaises(XplMessageError, self.__xpl_message.set_hop_count, 10)
@@ -78,7 +78,7 @@ class XplMessageTest(unittest.TestCase):
     def test_inc_hop_count(self):
         """ Test XplMessage.inc_hop_count() method.
         """
-        for i in xrange(8):
+        for i in range(8):
             self.__xpl_message.inc_hop_count()
         self.assertRaises(XplMessageError, self.__xpl_message.inc_hop_count)
 

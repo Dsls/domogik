@@ -235,7 +235,7 @@ class deviceAPI(MethodView):
         all_clients_data = res.get_data()
 
         # extract the interesting part of the json (just the client part)
-        if all_clients_data.has_key(request.form.get('client_id')):
+        if request.form.get('client_id') in all_clients_data:
             client_data = all_clients_data[request.form.get('client_id')]['data']
         else:
             return 500, "Error : there is no client id named '{0}'".format(request.form.get('client_id'))

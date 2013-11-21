@@ -5,7 +5,7 @@ import os
 import pwd
 import sys
 import platform
-import ConfigParser
+import configparser
 import argparse
 import shutil
 import logging
@@ -20,19 +20,19 @@ logging.basicConfig(filename='install.log', level=logging.DEBUG)
 
 def info(msg):
     logging.info(msg)
-    print("{0} [ {1} ] {2}".format(BLUE, msg, ENDC))
+    print(("{0} [ {1} ] {2}".format(BLUE, msg, ENDC)))
 
 def ok(msg):
     logging.info(msg)
-    print("{0} ==> {1}  {2}".format(OK, msg, ENDC))
+    print(("{0} ==> {1}  {2}".format(OK, msg, ENDC)))
 
 def warning(msg):
     logging.warning(msg)
-    print("{0} ==> {1}  {2}".format(WARNING, msg, ENDC))
+    print(("{0} ==> {1}  {2}".format(WARNING, msg, ENDC)))
 
 def fail(msg):
     logging.error(msg)
-    print("{0} ==> {1}  {2}".format(FAIL, msg, ENDC))
+    print(("{0} ==> {1}  {2}".format(FAIL, msg, ENDC)))
 
 def debug(msg):
     logging.debug(msg)
@@ -46,14 +46,14 @@ def get_c_hub():
         'armv6l' : 'src/domogik/xpl/tools/arm/xPL_Hub'
     }
     arch = platform.machine()
-    if arch in hub.keys():
+    if arch in list(hub.keys()):
         return hub[arch]
     else:
         return None
 
 def build_file_list(user):
     d_files = [
-        ('/etc/domogik', [user, 0755], \
+        ('/etc/domogik', [user, 0o755], \
                 ['src/domogik/examples/config/domogik.cfg.sample', \
                 'src/domogik/examples/packages/sources.list', \
                 'src/domogik/xpl/hub/examples/config/xplhub.cfg.sample']),
@@ -87,11 +87,11 @@ def build_file_list(user):
 
     if os.path.exists('/etc/init.d'):
         debug("Init script path is /etc/init.d")
-        d_files.append(('/etc/init.d/', [user, 0755], \
+        d_files.append(('/etc/init.d/', [user, 0o755], \
                 ['src/domogik/examples/init/domogik']))
     elif os.path.exists('/etc/rc.d'):
         debug("Init script path is /etc/rc.d")
-        d_files.append(('/etc/rc.d/', [user, 0755], \
+        d_files.append(('/etc/rc.d/', [user, 0o755], \
                 ['src/domogik/examples/init/domogik']))
     else:
         fail("Can't find firectory for init script")
@@ -140,7 +140,7 @@ def copy_files(user):
 
 def ask_user_name():
     info("Create domogik user")
-    print("As what user should domogik run? [domogik]: "),
+    print(("As what user should domogik run? [domogik]: "), end=' ')
     new_value = sys.stdin.readline().rstrip('\n')
     if new_value == "":
         d_user = 'domogik'
@@ -152,7 +152,7 @@ def ask_user_name():
 def create_user(d_user):
     info("Create domogik user")
     if d_user not in [x[0] for x in pwd.getpwall()]:
-        print("Creating the {0} user".format(d_user))
+        print(("Creating the {0} user".format(d_user)))
         debug('/usr/sbin/useradd --system {0}'.format(d_user))
         os.system('/usr/sbin/useradd --system {0}'.format(d_user))
         debug('/usr/sbin/usermod -a -G dialout {0}'.format(d_user))
@@ -200,13 +200,13 @@ def is_xplhub_advanced(advanced_mode, sect, key):
 def write_domogik_configfile(advanced_mode):
     # read the sample config file
     newvalues = False
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     config.read( ['/etc/domogik/domogik.cfg.sample'] )
     for sect in config.sections():
         info("Starting on section {0}".format(sect))
         for item in config.items(sect):
             if is_domogik_advanced(advanced_mode, sect, item[0]):
-                print("Key {0} [{1}]: ".format(item[0], item[1])),
+                print(("Key {0} [{1}]: ".format(item[0], item[1])), end=' ')
                 new_value = sys.stdin.readline().rstrip('\n')
                 if new_value != item[1] and new_value != '':
                     # need to write it to config file
@@ -220,13 +220,13 @@ def write_domogik_configfile(advanced_mode):
 def write_xplhub_configfile(advanced_mode):
     # read the sample config file
     newvalues = False
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     config.read( ['/etc/domogik/xplhub.cfg.sample'] )
     for sect in config.sections():
         info("Starting on section {0}".format(sect))
         for item in config.items(sect):
             if is_xplhub_advanced(advanced_mode, sect, item[0]):
-                print("Key {0} [{1}]: ".format(item[0], item[1])),
+                print(("Key {0} [{1}]: ".format(item[0], item[1])), end=' ')
                 new_value = sys.stdin.readline().rstrip('\n')
                 if new_value != item[1] and new_value != '':
                     # need to write it to config file
@@ -241,7 +241,7 @@ def write_xplhub_configfile(advanced_mode):
 def write_domogik_configfile_from_command_line(args):
     # read the sample config file
     newvalues = False
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     config.read( ['/etc/domogik/domogik.cfg.sample'] )
     for sect in config.sections():
         info("Starting on section {0}".format(sect))
@@ -249,7 +249,7 @@ def write_domogik_configfile_from_command_line(args):
             new_value = eval("args.{0}_{1}".format(sect, item[0]))
             if new_value != item[1] and new_value != '' and new_value != None:
                 # need to write it to config file
-                print("Set [{0}] : {1} = {2}".format(sect, item[0], new_value))
+                print(("Set [{0}] : {1} = {2}".format(sect, item[0], new_value)))
                 config.set(sect, item[0], new_value)
                 newvalues = True
             debug("Value {0} in comogik.cfg set to {1}".format(item[0], new_value))
@@ -261,7 +261,7 @@ def write_domogik_configfile_from_command_line(args):
 def write_xplhub_configfile_from_command_line(args):
     # read the sample config file
     newvalues = False
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     config.read( ['/etc/domogik/xplhub.cfg.sample'] )
     for sect in config.sections():
         info("Starting on section {0}".format(sect))
@@ -269,7 +269,7 @@ def write_xplhub_configfile_from_command_line(args):
             new_value = eval("args.{0}_{1}".format(sect, item[0]))
             if new_value != item[1] and new_value != '' and new_value != None:
                 # need to write it to config file
-                print("Set [{0}] : {1} = {2}".format(sect, item[0], new_value))
+                print(("Set [{0}] : {1} = {2}".format(sect, item[0], new_value)))
                 config.set(sect, item[0], new_value)
                 newvalues = True
             debug("Value {0} in comogik.cfg set to {1}".format(item[0], new_value))
@@ -283,7 +283,7 @@ def needupdate():
     # first check if there are already some config files
     if os.path.isfile("/etc/domogik/domogik.cfg") or \
        os.path.isfile("/etc/domogik/xplhub.cfg"):
-        print("Do you want to keep your current config files ? [Y/n]: "),
+        print(("Do you want to keep your current config files ? [Y/n]: "), end=' ')
         new_value = sys.stdin.readline().rstrip('\n')
         if new_value == "y" or new_value == "Y" or new_value == '':
             debug("keeping curent config files")
@@ -339,7 +339,7 @@ def install():
     try:
         # CHECK python version
         if sys.version_info < (2, 6):
-            print "Python version is to low, at least python 2.6 is needed"
+            print("Python version is to low, at least python 2.6 is needed")
             exit(0)
 
         # CHECK run as root
@@ -407,7 +407,7 @@ def install():
 
 def add_arguments_for_config_file(parser, fle):
     # read the sample config file
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     config.read( [fle] )
     for sect in config.sections():
         for item in config.items(sect):

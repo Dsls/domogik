@@ -36,7 +36,10 @@ PackageJson
 
 from domogik.common.configloader import Loader
 import traceback
-import urllib2
+try:
+    import urllib.request, urllib.error, urllib.parse
+except ImportError:
+    import urllib
 import datetime
 import json
 #TODO : why this import fails ?
@@ -105,7 +108,7 @@ class PackageJson():
             elif url != None:
                 json_file = url
                 icon_file = None
-                json_data = urllib2.urlopen(json_file)
+                json_data = urllib.request.urlopen(json_file)
                 # TODO : there is an error here!!!!!
                 self.json = json.load(xml_data)
 
@@ -176,100 +179,100 @@ class PackageJson():
         try:
             #check that all main keys are in the file
             expected = ["configuration", "xpl_commands", "xpl_stats", "commands", "sensors", "device_types", "identity", "json_version"]
-            self._validate_keys(expected, "file", self.json.keys(), ["products", "external"])
+            self._validate_keys(expected, "file", list(self.json.keys()), ["products", "external"])
             # validate identity
             expected = ["author", "author_email", "description", "domogik_min_version", "name", "type", "version"]
             optional = ["tags", "dependencies", "package_id", "icon_file"]
-            self._validate_keys(expected, "an identity param", self.json["identity"].keys(), optional)
+            self._validate_keys(expected, "an identity param", list(self.json["identity"].keys()), optional)
             # validate configuration
             expected = ["default", "description", "key", "name", "required", "type"]
             optional = ["sort", "max_value", "min_value", "choices", "mask", "multiline"]
             for conf in self.json["configuration"]:
-                self._validate_keys(expected, "a configuration item param", conf.keys(), optional)
+                self._validate_keys(expected, "a configuration item param", list(conf.keys()), optional)
             # validate procuts
-            if 'products' in self.json.keys():
+            if 'products' in list(self.json.keys()):
                 expected = ["name", "id", "documentation", "type"]
                 for prod in self.json['products']:
-                    self._validate_keys(expected, "a product", prod.keys())
+                    self._validate_keys(expected, "a product", list(prod.keys()))
             #validate the device_type
             for devtype in self.json["device_types"]:
                 devt = self.json["device_types"][devtype]
                 expected = ['id', 'name', 'description', 'commands', 'sensors', 'parameters']
-                self._validate_keys(expected, "device_type {0}".format(devtype), devt.keys())
+                self._validate_keys(expected, "device_type {0}".format(devtype), list(devt.keys()))
                 #check that all commands exists inisde each device_type
                 for cmd in devt["commands"]:
-                    if cmd not in self.json["commands"].keys():    
+                    if cmd not in list(self.json["commands"].keys()):    
                         raise PackageException("cmd {0} defined in device_type {1} is not found".format(cmd, devtype))
                 #check that all sensors exists inside each device type
                 for sens in devt["sensors"]:
-                    if sens not in self.json["sensors"].keys():    
+                    if sens not in list(self.json["sensors"].keys()):    
                         raise PackageException("sensor {0} defined in device_type {1} is not found".format(sens, devtype))
                 #see that each xplparam inside device_type has the following keys: key, description, type
                 expected = ["key", "type", "description"]
                 optional = ["max_value", "min_value", "choices", "mask", "multiline"]
                 for par in devt["parameters"]:
-                    self._validate_keys(expected, "a param for device_type {0}".format(devtype), par.keys(), optional)
+                    self._validate_keys(expected, "a param for device_type {0}".format(devtype), list(par.keys()), optional)
             #validate the commands
             for cmdid in self.json["commands"]:
                 cmd = self.json["commands"][cmdid]
                 expected = ['name', 'return_confirmation', 'parameters', 'xpl_command']
-                self._validate_keys(expected, "command {0}".format(cmdid), cmd.keys())
+                self._validate_keys(expected, "command {0}".format(cmdid), list(cmd.keys()))
                 # validate the params
                 expected = ['key', 'data_type', 'conversion']
                 for par in cmd['parameters']:
-                    self._validate_keys(expected, "a param for command {0}".format(cmdid), par.keys())
+                    self._validate_keys(expected, "a param for command {0}".format(cmdid), list(par.keys()))
                 # see that the xpl_command is defined
-                if cmd["xpl_command"] not in self.json["xpl_commands"].keys():
+                if cmd["xpl_command"] not in list(self.json["xpl_commands"].keys()):
                     raise PackageException("xpl_command {0} defined in command {1} is not found".format(cmd["xpl_command"], cmdid))
             #validate the sensors
             for senid in self.json["sensors"]:
                 sens = self.json["sensors"][senid]
                 expected = ['name', 'data_type', 'conversion', 'history']
                 hexpected = ['store', 'max', 'expire', 'round_value']
-                self._validate_keys(expected, "sensor {0}".format(senid), sens.keys())
-                self._validate_keys(hexpected, "sensor {0} history".format(senid), sens['history'].keys())
+                self._validate_keys(expected, "sensor {0}".format(senid), list(sens.keys()))
+                self._validate_keys(hexpected, "sensor {0} history".format(senid), list(sens['history'].keys()))
             #validate the xpl command
             for xcmdid in self.json["xpl_commands"]:
                 xcmd = self.json["xpl_commands"][xcmdid]
                 expected = ["name", "schema", "xplstat_name", "parameters"]
-                self._validate_keys(expected, "xpl_command {0}".format(xcmdid), xcmd.keys())
+                self._validate_keys(expected, "xpl_command {0}".format(xcmdid), list(xcmd.keys()))
                 # parameters
                 expected = ["static", "device"]
-                self._validate_keys(expected, "parameters for xpl_command {0}".format(xcmdid), xcmd['parameters'].keys())
+                self._validate_keys(expected, "parameters for xpl_command {0}".format(xcmdid), list(xcmd['parameters'].keys()))
                 # static parameter
                 expected = ["key", "value"]
                 for stat in xcmd['parameters']['static']:
-                    self._validate_keys(expected, "a static parameter for xpl_command {0}".format(xcmdid), stat.keys())
+                    self._validate_keys(expected, "a static parameter for xpl_command {0}".format(xcmdid), list(stat.keys()))
                 # device parameter
                 expected = ["key", "description", "type"]
                 for stat in xcmd['parameters']['device']:
-                    self._validate_keys(expected, "a device parameter for xpl_command {0}".format(xcmdid), stat.keys())
+                    self._validate_keys(expected, "a device parameter for xpl_command {0}".format(xcmdid), list(stat.keys()))
                 # see that the xpl_stat is defined
-                if xcmd["xplstat_name"] not in self.json["xpl_stats"].keys():
+                if xcmd["xplstat_name"] not in list(self.json["xpl_stats"].keys()):
                     raise PackageException("xplstat_name {0} defined in xpl_command {1} is not found".format(xcmd["xplstat_name"], xcmdid))
             #validate the xpl stats
             for xstatid in self.json["xpl_stats"]:
                 xstat = self.json["xpl_stats"][xstatid]
                 expected = ["name", "schema", "parameters"]
-                self._validate_keys(expected, "xpl_command {0}".format(xstatid), xstat.keys())
+                self._validate_keys(expected, "xpl_command {0}".format(xstatid), list(xstat.keys()))
                 # parameters
                 expected = ["static", "device", "dynamic"]
-                self._validate_keys(expected, "parameters for xpl_stat {0}".format(xstatid), xstat['parameters'].keys())
+                self._validate_keys(expected, "parameters for xpl_stat {0}".format(xstatid), list(xstat['parameters'].keys()))
                 # static parameter
                 expected = ["key", "value"]
                 for stat in xstat['parameters']['static']:
-                    self._validate_keys(expected, "a static parameter for xpl_stat {0}".format(xstatid), stat.keys())
+                    self._validate_keys(expected, "a static parameter for xpl_stat {0}".format(xstatid), list(stat.keys()))
                 # device parameter
                 expected = ["key", "description", "type"]
                 for stat in xstat['parameters']['device']:
-                    self._validate_keys(expected, "a device parameter for xpl_stat {0}".format(xstatid), stat.keys())
+                    self._validate_keys(expected, "a device parameter for xpl_stat {0}".format(xstatid), list(stat.keys()))
                 # dynamic parameter
                 expected = ["key", "sensor"]
                 opt = ["ignore_values"]
                 for stat in xstat['parameters']['dynamic']:
-                    self._validate_keys(expected, "a dynamic parameter for xpl_stat {0}".format(xstatid), stat.keys(), opt)
+                    self._validate_keys(expected, "a dynamic parameter for xpl_stat {0}".format(xstatid), list(stat.keys()), opt)
                     # check that the sensor exists
-                    if stat['sensor'] not in self.json["sensors"].keys():    
+                    if stat['sensor'] not in list(self.json["sensors"].keys()):    
                         raise PackageException("sensor {0} defined in xpl_stat {1} is not found".format(stat['sensor'], xstatid))
         except PackageException as exp:
             raise PackageException("Error validating the json: {0}".format(exp.value))
@@ -293,17 +296,17 @@ class PackageJson():
         """ Display xml data in a fine way
         """
         print(u"---- Package informations -------------------------------")
-        print(u"Type                : %s" % self.json["identity"]["type"])
-        print(u"Name                : %s" % self.json["identity"]["name"])
-        print(u"Package id          : %s" % self.json["identity"]["package_id"])
-        print(u"Version             : %s" % self.json["identity"]["version"])
-        print(u"Tags                : %s" % self.json["identity"]["tags"])
-        print(u"Link for doc        : %s" % self.json["identity"]["documentation"])
-        print(u"Description         : %s" % self.json["identity"]["description"])
-        print(u"Changelog           : %s" % self.json["identity"]["changelog"])
-        print(u"Author              : %s" % self.json["identity"]["author"])
-        print(u"Author's email      : %s" % self.json["identity"]["author_email"])
-        print(u"Domogik min version : %s" % self.json["identity"]["domogik_min_version"])
+        print((u"Type                : %s" % self.json["identity"]["type"]))
+        print((u"Name                : %s" % self.json["identity"]["name"]))
+        print((u"Package id          : %s" % self.json["identity"]["package_id"]))
+        print((u"Version             : %s" % self.json["identity"]["version"]))
+        print((u"Tags                : %s" % self.json["identity"]["tags"]))
+        print((u"Link for doc        : %s" % self.json["identity"]["documentation"]))
+        print((u"Description         : %s" % self.json["identity"]["description"]))
+        print((u"Changelog           : %s" % self.json["identity"]["changelog"]))
+        print((u"Author              : %s" % self.json["identity"]["author"]))
+        print((u"Author's email      : %s" % self.json["identity"]["author_email"]))
+        print((u"Domogik min version : %s" % self.json["identity"]["domogik_min_version"]))
         print(u"---------------------------------------------------------")
 
     def find_xplstats_for_device_type(self, devtype):
