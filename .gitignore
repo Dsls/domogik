@@ -10,6 +10,7 @@ syntax: glob
 .AppleDB/
 *.pyc
 *.pyoeggs/*
+*.bak
 eggs
 .installed.cfg
 src/Domogik.egg-info/

@@ -140,7 +140,7 @@ def copy_files(user):
 
 def ask_user_name():
     info("Create domogik user")
-    print(("As what user should domogik run? [domogik]: "), end=' ')
+    print(("As what user should domogik run? [domogik]: "))
     new_value = sys.stdin.readline().rstrip('\n')
     if new_value == "":
         d_user = 'domogik'
@@ -206,7 +206,7 @@ def write_domogik_configfile(advanced_mode):
         info("Starting on section {0}".format(sect))
         for item in config.items(sect):
             if is_domogik_advanced(advanced_mode, sect, item[0]):
-                print(("Key {0} [{1}]: ".format(item[0], item[1])), end=' ')
+                print(("Key {0} [{1}]: ".format(item[0], item[1])))
                 new_value = sys.stdin.readline().rstrip('\n')
                 if new_value != item[1] and new_value != '':
                     # need to write it to config file
@@ -226,7 +226,7 @@ def write_xplhub_configfile(advanced_mode):
         info("Starting on section {0}".format(sect))
         for item in config.items(sect):
             if is_xplhub_advanced(advanced_mode, sect, item[0]):
-                print(("Key {0} [{1}]: ".format(item[0], item[1])), end=' ')
+                print(("Key {0} [{1}]: ".format(item[0], item[1])))
                 new_value = sys.stdin.readline().rstrip('\n')
                 if new_value != item[1] and new_value != '':
                     # need to write it to config file
@@ -283,7 +283,7 @@ def needupdate():
     # first check if there are already some config files
     if os.path.isfile("/etc/domogik/domogik.cfg") or \
        os.path.isfile("/etc/domogik/xplhub.cfg"):
-        print(("Do you want to keep your current config files ? [Y/n]: "), end=' ')
+        print(("Do you want to keep your current config files ? [Y/n]: "))
         new_value = sys.stdin.readline().rstrip('\n')
         if new_value == "y" or new_value == "Y" or new_value == '':
             debug("keeping curent config files")
