@@ -112,7 +112,7 @@ class MQRep(object):
         self.send_hb()
         if self.curr_liveness >= 0:
             return
-        #print(('{3} lost connection'.format(time.time())))
+        #print(('{0} lost connection'.format(time.time())))
         # ouch, connection seems to be dead
         self.shutdown()
         # try to recreate it

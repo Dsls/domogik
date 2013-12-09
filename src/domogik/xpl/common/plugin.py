@@ -350,21 +350,29 @@ class XplPlugin(BasePlugin, MQRep):
                     self.force_leave()
                     return []
             for a_device in device_list:
-                print(type(a_device['name']))
+                print type(a_device['name'])
                 self.log.info(u"- id : {0}  /  name : {1}  /  device type id : {2}".format(a_device['id'], \
                                                                                     a_device['name'], \
                                                                                     a_device['device_type_id']))
                 # log some informations about the device
                 # first : the stats
-                self.log.info(u"  Features :")
+                self.log.info(u"  xpl_stats features :")
                 for a_xpl_stat in a_device['xpl_stats']:
                     self.log.info(u"  - {0}".format(a_xpl_stat))
-                    self.log.info(u"    Parameters :")
-                    for a_feature in a_device['xpl_stats'][a_xpl_stat]['parameters']['device']:
+                    self.log.info(u"    Static Parameters :")
+                    for a_feature in a_device['xpl_stats'][a_xpl_stat]['parameters']['static']:
                         self.log.info(u"    - {0} = {1}".format(a_feature['key'], a_feature['value']))
+                    self.log.info(u"    Dynamic Parameters :")
+                    for a_feature in a_device['xpl_stats'][a_xpl_stat]['parameters']['dynamic']:
+                        self.log.info(u"    - {0}".format(a_feature['key']))
 
                 # then, the commands
-                # TODO !!!!!!
+                self.log.info(u"  xpl_commands features :")
+                for a_xpl_cmd in a_device['xpl_commands']:
+                    self.log.info(u" - {0}".format(a_xpl_cmd))
+                    self.log.info(u" + Parameters :")
+                    for a_feature in a_device['xpl_commands'][a_xpl_cmd]['parameters']:
+                        self.log.info(u" - {0} = {1}".format(a_feature['key'], a_feature['value']))
 
             self.devices = device_list
             return device_list
@@ -391,7 +399,7 @@ class XplPlugin(BasePlugin, MQRep):
         for a_device in self.devices:
             # first, search for device type
             if a_device['device_type_id'] == device_type:
-                params = a_device[type][feature]['parameters']['device']
+                params = a_device[type][feature]['parameters']['static']
                 found = True
                 for key in data:
                     for a_param in params:
@@ -425,25 +433,43 @@ class XplPlugin(BasePlugin, MQRep):
                 self.new_devices.append(new_device)
             else:
                 self.log.debug(u"The device has already been detected since the plugin startup")
-            print(self.new_devices)
+            print self.new_devices
 
 
 
 
 
 
+
+    def get_parameter(self, a_device, key):
+        """ For a device feature, return the required parameter value
+            @param a_device: the device informations
+            @param key: the parameter key
+        """
+        try:
+            self.log.debug(u"Get parameter '{0}'".format(key))
+            for a_param in a_device['parameters']:
+                if a_param == key:
+                    value = self.cast(a_device['parameters'][a_param]['value'], a_device['parameters'][a_param]['type'])
+                    self.log.debug(u"Parameter value found: {0}".format(value))
+                    return value
+            self.log.warning(u"Parameter not found : return None")
+            return None
+        except:
+            self.log.error(u"Error while looking for a device parameter. Return None. Error: {0}".format(traceback.format_exc()))
+            return None
+         
 
     def get_parameter_for_feature(self, a_device, type, feature, key):
         """ For a device feature, return the required parameter value
-            Example with : a_device = {u'xpl_stats': {u'get_total_space': {u'name': u'get_total_space', u'id': 49, u'parameters': {u'device': [{u'xplstat_id': 49, u'key': u'device', u'value': u'/home'}, {u'xplstat_id': 49, u'key': u'interval', u'value': u'1'}], u'static': [{u'xplstat_id': 49, u'key': u'type', u'value': u'total_space'}], u'dynamic': [{u'xplstat_id': 49, u'ignore_values': u'', u'key': u'current', u'value': None}]}, u'schema': u'sensor.basic'}, u'get_free_space': {u'name': u'get_free_space', u'id':51, u'parameters': {u'device': [{u'xplstat_id': 51, u'key': u'device', u'value': u'/home'}, {u'xplstat_id': 51, u'key': u'interval', u'value': u'1'}], u'static': [{u'xplstat_id': 51, u'key': u'type', u'value': u'free_space'}], u'dynamic': [ {u'xplstat_id': 51, u'ignore_values': u'', u'key': u'current', u'value': None}]}, u'schema': u'sensor.basic'}, u'get_used_space': {u'name': u'get_used_space', u'id': 52, u'parameters': {u'device': [{u'xplstat_id': 52, u'key': u'device', u'value': u'/home'}, {u'xplstat_id': 52, u'key': u'interval', u'value': u'1'}], u'static': [{u'xplstat_id': 52, u'key': u'type', u'value': u'used_space'}], u'dynamic': [{u'xplstat_id': 52, u'ignore_values': u'', u'key': u'current', u'value': None}]}, u'schema': u'sensor.basic'}, u'get_percent_used': {u'name': u'get_percent_used', u'id': 50, u'parameters': {u'device': [{u'xplstat_id': 50, u'key': u'device', u'value': u'/home'}, {u'xplstat_id': 50, u'key': u'interval', u'value': u'1'}], u'static': [{u'xplstat_id': 50, u'key': u'type', u'value': u'percent_used'}], u'dynamic': [{u'xplstat_id': 50, u'ignore_values': u'', u'key': u'current', u'value': None}]}, u'schema': u'sensor.basic'}}, u'commands': {}, u'description': u'/home sur darkstar', u'reference': u'ref', u'id': 49, u'device_type_id': u'diskfree.disk_usage', u'sensors': {u'get_total_space': {u'conversion': u'', u'name': u'Total Space', u'data_type': u'DT_Scaling', u'last_received': None, u'last_value': None, u'id': 80}, u'get_free_space': {u'conversion': u'', u'name': u'Free Space', u'data_type': u'DT_Scaling', u'last_received': None, u'last_value': None, u'id': 82}, u'get_used_space': {u'conversion': u'', u'name': u'Used Space', u'data_type': u'DT_Scaling', u'last_received': None, u'last_value': None, u'id': 83}, u'get_percent_used': {u'conversion': u'', u'name': u'Percent used', u'data_type': u'DT_Scaling', u'last_received': None, u'last_value': None, u'id': 81}}, u'client_id': u'domogik-diskfree.darkstar', u'name': u'darkstar:/home'}
-                         type = xpl_stats
-                         feature = get_percent_used
-                         key = device
-            Return : /home
+            @param a_device: the device informations
+            @param type: the parameter type (xpl_stats, ...)
+            @param feature: the parameter feature
+            @param key: the parameter key
         """
         try:
             self.log.debug(u"Get parameter '{0}' for '{1}', feature '{2}'".format(key, type, feature))
-            for a_param in a_device[type][feature]['parameters']['device']:
+            for a_param in a_device[type][feature]['parameters']['static']:
                 if a_param['key'] == key:
                     value = self.cast(a_param['value'], a_param['type'])
                     self.log.debug(u"Parameter value found: {0}".format(value))
@@ -461,7 +487,7 @@ class XplPlugin(BasePlugin, MQRep):
         self.log.info(u"Check if there are pictures for the defined products")
         ok = True
         ok_product = None
-        if 'products' in self.json_data:
+        if self.json_data.has_key('products'):
             for product in self.json_data['products']:
                 ok_product = False
                 for ext in PRODUCTS_PICTURES_EXTENSIONS:
@@ -533,14 +559,14 @@ class XplPlugin(BasePlugin, MQRep):
     
     def _mdp_reply_helper_do(self, msg):
         contens = msg.get_data()
-        if 'command' in list(contens.keys()):
-            if contens['command'] in list(self.helpers.keys()):
-                if 'params' not in list(contens.keys()):
-                    contens['params'] = {}
+        if 'command' in contens.keys():
+            if contens['command'] in self.helpers.keys():
+                if 'parameters' not in contens.keys():
+                    contens['parameters'] = {}
                     params = []
                 else:
                     params = []
-                    for key, value in list(contens['params'].items()):
+                    for key, value in contens['parameters'].items():
                         params.append( "{0}='{1}'".format(key, value) )
                 command = "self.{0}(".format(self.helpers[contens['command']]['call'])
                 command += ", ".join(params)
@@ -551,14 +577,14 @@ class XplPlugin(BasePlugin, MQRep):
                 msg = MQMessage()
                 msg.set_action('helper.do.result')
                 msg.add_data('command', contens['command'])
-                msg.add_data('params', contens['params'])
+                msg.add_data('parameters', contens['parameters'])
                 msg.add_data('result', result)
                 self.reply(msg.get())
 
     def _mdp_reply_helper_help(self, data):
         content = data.get_data()
-        if 'command' in list(contens.keys()):
-            if content['command'] in list(self.helpers.keys()):
+        if 'command' in contens.keys():
+            if content['command'] in self.helpers.keys():
                 msg = MQMessage()
                 msg.set_action('helper.help.result')
                 msg.add_data('help', self.helpers[content['command']]['help'])
@@ -602,7 +628,7 @@ class XplPlugin(BasePlugin, MQRep):
         ### Send the ack over MQ Rep
         msg = MQMessage()
         msg.set_action('helper.list.result')
-        msg.add_data('actions', list(self.helpers.keys()))
+        msg.add_data('actions', self.helpers.keys())
         self.reply(msg.get())
 
     def _set_status(self, status):

@@ -208,7 +208,7 @@ class PackageJson():
                     if sens not in list(self.json["sensors"].keys()):    
                         raise PackageException("sensor {0} defined in device_type {1} is not found".format(sens, devtype))
                 #see that each xplparam inside device_type has the following keys: key, description, type
-                expected = ["key", "type", "description"]
+                expected = ["key", "type", "description", "xpl"]
                 optional = ["max_value", "min_value", "choices", "mask", "multiline"]
                 for par in devt["parameters"]:
                     self._validate_keys(expected, "a param for device_type {0}".format(devtype), list(par.keys()), optional)
@@ -227,7 +227,7 @@ class PackageJson():
             #validate the sensors
             for senid in self.json["sensors"]:
                 sens = self.json["sensors"][senid]
-                expected = ['name', 'data_type', 'conversion', 'history']
+                expected = ['name', 'data_type', 'conversion', 'history', 'type']
                 hexpected = ['store', 'max', 'expire', 'round_value']
                 self._validate_keys(expected, "sensor {0}".format(senid), list(sens.keys()))
                 self._validate_keys(hexpected, "sensor {0} history".format(senid), list(sens['history'].keys()))
